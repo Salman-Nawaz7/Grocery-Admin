@@ -5,6 +5,7 @@ import { ProductAddComponent } from './product-add/product-add.component';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { AddCategoryComponent } from './add-category/add-category.component';
+import { AboutUsComponent } from './about-us/about-us.component';
 
 export const routes: Routes = [
     {path:'',redirectTo:'dashboard',pathMatch:'full'},
@@ -13,5 +14,6 @@ export const routes: Routes = [
         {path:'product-add',component:ProductAddComponent},
         {path:'product-list',component:ProductListComponent},
         {path:'contact-us',component:ContactUsComponent},
-        {path:'add-category',component:AddCategoryComponent}
+        {path:'add-category',component:AddCategoryComponent},
+        {path:'about-us',component:AboutUsComponent}
 ];
