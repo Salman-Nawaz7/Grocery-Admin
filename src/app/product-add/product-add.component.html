@@ -25,6 +25,7 @@
   </style>
 </head>
 <body>
+  
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
@@ -37,49 +38,69 @@
         <a href="/category-list">Category List</a>
         <a href="/contact-us">Contact Requests</a>
         <a href="/about-us">About us</a>
+        <a href="/users">Users</a>
+        <button class="btn btn-danger btn-sm" (click)="logout()">Logout</button>
       </div>
 
       <!-- Main Content -->
       <div class="col-md-10 p-4">
         <h2 class="mb-4">Add New Product</h2>
 
-        <form (ngSubmit)="saveProduct()">
+        <form #productForm="ngForm" (ngSubmit)="saveProduct()" novalidate>
           <div class="mb-3">
             <label class="form-label">Product Name</label>
-            <input type="text" class="form-control" [(ngModel)]="product.title" name="name" placeholder="Enter product name" />
-          </div>
+            <input type="text" class="form-control"
+  [(ngModel)]="product.title"
+  name="name"
+  required
+  #name="ngModel" />
+<div *ngIf="name.invalid && name.touched" class="text-danger">Product name is required.</div>
 
+          </div>
+        
           <div class="mb-3">
             <label class="form-label">Description</label>
-            <textarea class="form-control" rows="4" [(ngModel)]="product.description" name="description" placeholder="Enter product description"></textarea>
+            <textarea class="form-control"
+  [(ngModel)]="product.description"
+  name="description"
+  required
+  #description="ngModel"></textarea>
+<div *ngIf="description.invalid && description.touched" class="text-danger">Description is required.</div>
+
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Category</label>
-              <select class="form-select" [(ngModel)]="product.category" name="category">
-                <option selected>Select category</option>
-                <option>Vegetables</option>
-                <option>Fruits</option>
-                <option>Breads</option>
-                <option>Juices</option>
-                <option>Tea and coffee</option>
-              </select>
+              <select class="form-select"
+              [(ngModel)]="product.category"
+              name="category"
+              required
+              #category="ngModel">
+              <option value="" disabled selected>Select category</option>
+              <option value="Vegetables">Vegetables</option>
+              <option value="Fruits">Fruits</option>
+              <option value="Breads">Breads</option>
+              <option value="Juices">Juices</option>
+              <option value="Tea and coffee">Tea and coffee</option>
+            </select>
+            <div *ngIf="category.invalid && category.touched" class="text-danger">Category is required.</div>
+            
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Stock</label>
-              <input type="number" class="form-control" [(ngModel)]="product.stock" name="stock" placeholder="Available stock" />
+              <input type="number" min="0" (keydown)="preventNegative($event)" class="form-control" [(ngModel)]="product.stock" name="stock" placeholder="Available stock" />
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-3 mb-3">
               <label class="form-label">Base Price</label>
-              <input type="number" class="form-control" [(ngModel)]="product.baseprice" name="baseprice" placeholder="Price in USD" />
+              <input type="number" min="0" (keydown)="preventNegative($event)" class="form-control" [(ngModel)]="product.baseprice" name="baseprice" placeholder="Price in USD" />
             </div>
             <div class="col-md-3 mb-3">
               <label class="form-label">Sale Price</label>
-              <input type="number" class="form-control" [(ngModel)]="product.saleprice" name="saleprice" placeholder="Price in USD" />
+              <input type="number" min="0" (keydown)="preventNegative($event)" class="form-control" [(ngModel)]="product.saleprice" name="saleprice" placeholder="Price in USD" />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Status</label>
@@ -92,28 +113,49 @@
           
           <div >
             <label class="form-label">Image</label>
-            <input type="file" class="form-control" (change)="onFileSelected($event)" />
-          </div>
-          <div class="row mt-3" >
-          <!-- Show Preview -->
-          
-        
-          <!-- <div class="mb-3">
-            <label class="form-label">Upload Image</label>
-            <input type="file" class="form-control"  (change)="onFileSelected($event)"  />
-          </div> -->
-          <div class="col-md-6  ">
-          <button type="submit" class="col-md-6 mt-3 btn btn-primary">Save Product</button>
-          </div>
-          
-        <div  *ngIf="previewUrl" class="col-md-6 position-relative justify-content-end">
-          <img [src]="previewUrl" alt="Preview" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
-          <button  type="button" class="btn btn-sm position-absolute top-5" (click)="removeImage()" style="transform: translate(50%, -50%)">
-            ✖
-          </button>
-        </div>
-        </div>
+            <input #fileInput type="file" class="form-control" (change)="onFileSelected($event)" />
 
+          </div>
+          <!--  -->
+          <div class="row mt-3">
+            <div class="col-md-12">
+              <div
+                class="d-flex align-items-center justify-content-center"
+                style="height: 120px; border: 1px dashed #ccc; background-color: #f8f9fa;"
+              >
+                <ng-container *ngIf="previewUrl; else placeholder">
+                  <div class="position-relative d-inline-block">
+                    <img
+                      [src]="previewUrl"
+                      alt="Preview"
+                      class="img-thumbnail"
+                      style="max-height: 100px; max-width: 100px; object-fit: contain;"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-sm  position-absolute"
+                      style="top: 0; right: 0; transform: translate(50%, -50%);"
+                      (click)="removeImage()"
+                    >
+                      ✖
+                    </button>
+                  </div>
+                </ng-container>
+                <ng-template #placeholder>
+                  <span class="text-muted">Image preview will appear here</span>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          
+          
+          <div class="d-flex justify-content-center mt-4">
+            <button type="submit" class="btn btn-primary px-4" [disabled]="productForm.invalid">
+              Save Product
+            </button>
+            
+          </div>
+          
         </form>
       </div>
     </div>

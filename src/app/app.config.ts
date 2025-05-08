@@ -14,9 +14,13 @@ import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-exper
 import { connectorConfig } from '@firebasegen/default-connector';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { provideHttpClient } from '@angular/common/http';
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideAnimations(),
+  importProvidersFrom(ToastrModule.forRoot()),
     provideHttpClient(),
     // ✅ Only ONE Firebase initialization
     provideFirebaseApp(() => initializeApp(environment.firebase)),
@@ -38,3 +42,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true })
   ]
 };
+function provideToastr(): import("@angular/core").Provider | import("@angular/core").EnvironmentProviders {
+  throw new Error('Function not implemented.');
+}
+

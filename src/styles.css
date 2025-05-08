@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+/* Override ngx-toastr success toast background */
+.toast-success {
+    background-color: #2f3349 !important;
+    color: #ffffff !important;
+    border-left: 4px solid #00c48d !important;
+    border-radius: 6px !important;
+  }
+  
+  /* Optional: tweak other toast types */
+  .toast-error {
+    background-color: #4b1e1e !important;
+    color: #ffffff !important;
+  }
+  .toast-info {
+    background-color: #2b3e5c !important;
+    color: #ffffff !important;
+  }
+  

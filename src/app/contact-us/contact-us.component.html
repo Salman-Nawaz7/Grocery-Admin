@@ -48,6 +48,8 @@
         <a href="/category-list">Category List</a>
         <a href="/contact-us">Contact Requests</a>
         <a href="/about-us">About us</a>
+        <a href="/users">Users</a>
+        <button class="btn btn-danger btn-sm" (click)="logout()">Logout</button>
       </div>
 
       <!-- Main Content -->
@@ -70,8 +72,7 @@
             <tbody>
               <!-- Example row -->
              
-
-              <tr *ngFor="let request of requests let i = index">
+              <tr *ngFor="let request of paginatedRequests let i = index">
                 <td>{{ i + 1 }}</td>
                 <td>{{ request.name }}</td>
                 <td>{{ request.email }}</td>
@@ -88,6 +89,40 @@
             </tbody>
           </table>
         </div>
+        <!-- Pagination (Static) -->
+        <nav *ngIf="totalPages > 1">
+          <ul class="pagination mt-3">
+        
+            <!-- Previous Button -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button type="button" class="page-link" 
+                      (click)="changePage(currentPage - 1)" 
+                      [disabled]="currentPage === 1">
+                Previous
+              </button>
+            </li>
+        
+            <!-- Page Numbers -->
+            <li class="page-item" 
+                *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="currentPage === i + 1">
+              <button type="button" class="page-link" 
+                      (click)="changePage(i + 1)">
+                {{ i + 1 }}
+              </button>
+            </li>
+        
+            <!-- Next Button -->
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button type="button" class="page-link" 
+                      (click)="changePage(currentPage + 1)" 
+                      [disabled]="currentPage === totalPages">
+                Next
+              </button>
+            </li>
+            
+          </ul>
+        </nav>
       </div>
     </div>
   </div>

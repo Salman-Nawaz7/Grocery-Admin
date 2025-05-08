@@ -1,9 +1,11 @@
 
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../product.service'; // import your Firestore service
+import { ProductService } from '../product.service';
 import { FormsModule } from '@angular/forms';
-import { SidebarComponent } from "../sidebar/sidebar.component";
+import { ToastrService } from 'ngx-toastr';
+import { Auth, signOut } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-product',
@@ -21,55 +23,81 @@ export class ProductAddComponent {
     baseprice: 0,
     saleprice: 0,
     status: 'Active',
-    image:"",
+    image: '',
   };
 
-  constructor(private productService: ProductService) {}
+  @ViewChild('fileInput') fileInput!: ElementRef;
+  previewUrl: string | null = null;
+  selectedFile: File | null = null;
 
- 
+  constructor(
+    private toastr: ToastrService,
+    private productService: ProductService,private auth: Auth, private router: Router
+  ) {}
 
-  async saveProduct() {
-    const { title, description, category, stock, baseprice, saleprice, status, image } = this.product;
-    const productData = { title, description, category, stock, baseprice, saleprice, status, image };
+  
 
-    try {
-      await this.productService.addProduct(productData);
-    } catch (error) {
-      console.error('Error adding product:', error);
+  preventNegative(event: KeyboardEvent): void {
+    if (event.key === '-' || event.key === 'e') {
+      event.preventDefault();
     }
   }
 
-  previewUrl: string | null = null;
-selectedFile: File | null = null;
+  async saveProduct() {
+    try {
+      if (this.selectedFile) {
+        const imageUrl = await this.productService.uploadImageToImgBB(this.selectedFile);
+        this.product.image = imageUrl;
+      }
 
+      const { title, description, category, stock, baseprice, saleprice, status, image } = this.product;
+      const productData = { title, description, category, stock, baseprice, saleprice, status, image };
 
+      await this.productService.addProduct(productData);
 
-removeImage(): void {
-  this.previewUrl = null;
-  this.selectedFile = null;
-}
+      this.toastr.success('Product saved successfully!', 'Success', {
+        positionClass: 'toast-top-right',
+        timeOut: 3000,
+      });
+      
 
-// 
+      // Optionally reset form or redirect
+    } catch (error) {
+      this.toastr.error('Failed to save product.', 'Error', {
+        positionClass: 'toast-top-right'
+      });
+      console.error(error);
+    }
+  }
+
+  removeImage(): void {
+    this.previewUrl = null;
+    this.selectedFile = null;
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
-    // 
+
+    this.selectedFile = file;
+
     const reader = new FileReader();
     reader.onload = () => {
       this.previewUrl = reader.result as string;
     };
     reader.readAsDataURL(file);
-    // 
-    this.productService.uploadImageToImgBB(file)
-      .then(url => {
-        console.log('Image uploaded:', url);
-        this.product.image=url;
-       
-        // return this.productService.saveImageInfoToFirestore(url, { category: 'Fruits' });
-      })
-      
-      .catch(err => {
-        console.error('Upload error:', err);
-      });
   }
+  logout() {
+        signOut(this.auth).then(() => {
+          localStorage.removeItem('User data');
+          this.router.navigate(['/login']);
+        }).catch((error) => {
+          console.error('Logout error:', error);
+        });
+      }
+
+      
 }

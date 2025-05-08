@@ -1,0 +1,61 @@
+<div class="login-page">
+    <div class="login-form">
+      <div class="container vh-100 d-flex justify-content-center align-items-center bg-light">
+        <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+          <h4 class="text-center mb-3">Sign In</h4>
+  
+          <form #loginForm="ngForm" (ngSubmit)="login()" novalidate>
+            <div class="mb-3">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                [(ngModel)]="email"
+                #emailModel="ngModel"
+                required
+                email
+                class="form-control"
+              />
+              <div *ngIf="emailModel.invalid && emailModel.touched" class="text-danger small">
+                <div *ngIf="emailModel.errors?.['required']">Email is required.</div>
+                <div *ngIf="emailModel.errors?.['email']">Enter a valid email.</div>
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                [(ngModel)]="password"
+                #passwordModel="ngModel"
+                required
+                minlength="6"
+                class="form-control"
+              />
+              <div *ngIf="passwordModel.invalid && passwordModel.touched" class="text-danger small">
+                <div *ngIf="passwordModel.errors?.['required']">Password is required.</div>
+                <div *ngIf="passwordModel.errors?.['minlength']">Minimum 6 characters.</div>
+              </div>
+            </div>
+            
+            <button [disabled]="loginForm.invalid" class="btn btn-primary w-100" style="margin-top: 5%;" type="submit">
+              Login
+            </button>
+            <!-- <button class="btn btn-primary w-100" (click)="registerUser('salman@gmail.com','111111')" style="margin-top: 5%;" type="button" [disabled]="loginForm.invalid">
+                registerUser
+              </button> -->
+            <div *ngIf="loginError" class="text-danger text-center mt-3">Invalid Emailor Password!</div>
+          </form>
+  
+          <hr />
+  
+          <button type="button" (click)="signInWithGoogle()" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
+            <img src="https://img.icons8.com/color/24/000000/google-logo.png" class="me-2" width="20" height="20" />
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

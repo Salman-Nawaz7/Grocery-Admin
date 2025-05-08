@@ -1,0 +1,166 @@
+
+<!--  -->
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Category List - Sneat Style</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f5f5f9; }
+    .sidebar {
+      height: 100vh;
+      background-color: #2f3349;
+      color: #fff;
+    }
+    .sidebar a {
+      color: #adb5bd;
+      text-decoration: none;
+      display: block;
+      padding: 10px 20px;
+    }
+    .sidebar a:hover {
+      background-color: #3c3f58;
+      color: #fff;
+    }
+    .table thead th {
+      background-color: #f0f2f8;
+    }
+    .category-img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-2 sidebar d-flex flex-column p-0">
+        <h4 class="text-center py-4">Dashboard</h4>
+        <a href="#">Overview</a>
+        <a href="/product-add">Add Products</a>
+        <a href="/product-list">Products List</a>
+        <a href="/add-category">Add Category</a>
+        <a href="/category-list">Category List</a>
+        <a href="/contact-us">Contact Requests</a>
+        <a href="/about-us">About us</a>
+        <a href="/users">Users</a>
+        <button class="btn btn-danger btn-sm" (click)="logout()">Logout</button>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-10 p-4">
+        <h2 class="mb-4">Category List</h2>
+
+        <table class="table table-bordered table-hover align-middle">
+          <thead>
+            <tr>
+              <!-- <th>User Name</th> -->
+              <th>Emails</th>
+              <th>Roles</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <!-- <td>{{ user.name || 'N/A' }}</td> -->
+      <td>{{ user.email }}</td>
+      <td>{{ user.role || 'N/A' }}</td> <!-- Handle missing role -->
+      <td>
+        <button class="btn btn-sm btn-primary me-2" (click)="editUser(user)">Edit</button>
+        <!-- <button class="btn btn-sm btn-danger" (click)="deleteUser(user.id)">Delete</button> -->
+      </td>
+            </tr>
+            
+          
+        
+        
+        <div *ngIf="users.length === 0">
+          <p>No Categorys available.</p>
+        </div>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+      <!-- Edit Category Modal (Angular-only) -->
+<div *ngIf="selectedUser" class="modal-backdrop">
+  <div class="modal-content-wrapper">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h5>Edit User</h5>
+        <button type="button" class="btn-close" (click)="cancelEdit()"></button>
+      </div>
+
+      <form (ngSubmit)="updateUser()">
+        <!-- <div class="mb-3">
+          <label class="form-label">User Name</label>
+          <input type="text" class="form-control" [(ngModel)]="selectedUser.title" name="name" placeholder="Enter User name" />
+        </div> -->
+        <div class="row">
+        <div class="col-md-8 mb-3">
+          <label class="form-label">Email</label>
+          <input disabled type="text" class="form-control" rows="4" [(ngModel)]="selectedUser.email" name="email" placeholder="Enter User email"/>
+        </div>
+  
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Roles</label>
+          <select class="form-select" [(ngModel)]="selectedUser.role" name="role">
+            <option selected>User</option>
+            <option>Admin</option>
+          </select>
+        </div>
+        </div>
+
+        <!-- <div >
+          <label class="form-label">Image</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event)" />
+        </div> -->
+        <div class="row mt-3">
+          <div class="col-12 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+            <button type="submit" class="btn btn-success">Update</button>
+          </div>
+        </div>
+        
+  
+      </form>
+    </div>
+  </div>
+</div>
+<!--  -->
+</body>
+</html>
+<!--  -->
+
+<div class="p-4 max-w-md mx-auto bg-white rounded shadow">
+  <h2 class="text-xl font-semibold mb-4">Update Account</h2>
+
+  <!-- Change Email -->
+  <form (ngSubmit)="onChangeEmail('tosohaw353@firain.com')" class="mb-4">
+    <label class="block mb-1">New Email</label>
+    <input #emailInput type="email" class="w-full p-2 border rounded mb-2" required />
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Change Email</button>
+  </form>
+
+  <!-- Change Password -->
+  <form (ngSubmit)="onChangePassword(passwordInput.value)" class="mb-4">
+    <label class="block mb-1">New Password</label>
+    <input #passwordInput type="password" class="w-full p-2 border rounded mb-2" required />
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Change Password</button>
+  </form>
+
+  <!-- Optional: Reauthenticate -->
+  <div *ngIf="showReauth" class="mt-4">
+    <h3 class="text-md font-medium mb-2">Reauthenticate</h3>
+    <input #reauthPassword type="password" class="w-full p-2 border rounded mb-2" placeholder="Current password" />
+    <button (click)="onReauthenticate(reauthPassword.value)" class="bg-red-500 text-white px-4 py-2 rounded">
+      Reauthenticate
+    </button>
+  </div>
+</div>

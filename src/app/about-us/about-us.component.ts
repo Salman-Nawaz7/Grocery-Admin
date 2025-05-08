@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../product.service';
+import { Auth, signOut } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-about-us',
@@ -12,7 +14,7 @@ import { ProductService } from '../product.service';
 export class AboutUsComponent implements OnInit {
   AboutUs: any[] = [];
   
-    constructor(private AboutUsService: ProductService) {}
+    constructor(private AboutUsService: ProductService,private auth: Auth, private router: Router) {}
   
     ngOnInit(): void {
       this.AboutUsService.getAboutUs().subscribe((data) => {
@@ -227,4 +229,13 @@ export class AboutUsComponent implements OnInit {
         })
         .catch(err => console.error('Update failed:', err));
     }
+
+    logout() {
+          signOut(this.auth).then(() => {
+            localStorage.removeItem('User data');
+            this.router.navigate(['/login']);
+          }).catch((error) => {
+            console.error('Logout error:', error);
+          });
+        }
 }

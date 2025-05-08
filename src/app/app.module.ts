@@ -5,6 +5,8 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 @NgModule({
   declarations: [],
@@ -15,7 +17,11 @@ import { HttpClientModule } from '@angular/common/http';
     // Initialize Firebase with the compat SDK
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule, // Import Firestore
+    AngularFireAuthModule,
+    
   ],
   providers: [],
 })
 export class AppModule {}
+
+

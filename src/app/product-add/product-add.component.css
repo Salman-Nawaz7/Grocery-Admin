@@ -1,0 +1,44 @@
+/* Hide arrows in number input for Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none; /* Standard property */
+  margin: 0;
+}
+
+/* Hide arrows in Firefox */
+input[type=number] {
+  -moz-appearance: textfield; /* Firefox-specific */
+  appearance: textfield;      /* Standard property fallback */
+}
+/* Override toastr success background color */
+/* styles.css or styles.scss */
+.toast-success {
+  background-color: #2f3349 !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px 16px !important;
+  border-left: 4px solid #00c48d;
+  display: flex;
+  align-items: center;
+}
+
+.toast-success .toast-message {
+  margin-left: 8px;
+  flex: 1;
+}
+
+.toast-success .toast-title {
+  font-weight: 600;
+}
+
+.toast-success::before {
+  content: "✔";
+  font-size: 16px;
+  margin-right: 10px;
+  color: #00c48d;
+}
+

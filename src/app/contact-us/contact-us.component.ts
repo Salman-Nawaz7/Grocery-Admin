@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../product.service';
 import Swal from 'sweetalert2';
 import { SidebarComponent } from "../sidebar/sidebar.component";
+import { Auth, signOut } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-contact-us',
   imports: [CommonModule, FormsModule],
@@ -12,14 +14,30 @@ import { SidebarComponent } from "../sidebar/sidebar.component";
 })
 export class ContactUsComponent implements OnInit{
 requests: any[] = [];
-
-  constructor(private productService: ProductService) {}
+paginatedRequests: any[] = [];
+currentPage: number = 1;
+itemsPerPage: number = 10;
+totalPages: number = 0;
+  constructor(private productService: ProductService,private auth: Auth, private router: Router) {}
 
   ngOnInit(): void {
     this.productService.getContactRequests().subscribe((data) => {
       this.requests = data;
+      this.totalPages = Math.ceil(this.requests.length / this.itemsPerPage);
+      this.updatePaginatedRequests();
       console.log('Requests loaded:', data);
     });
+  }
+  updatePaginatedRequests(): void {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    this.paginatedRequests = this.requests.slice(start, end);
+  }
+
+  changePage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePaginatedRequests();
   }
 
   deleteRequest(id: string) {
@@ -66,4 +84,12 @@ requests: any[] = [];
     });
     
   }
+  logout() {
+        signOut(this.auth).then(() => {
+          localStorage.removeItem('User data');
+          this.router.navigate(['/login']);
+        }).catch((error) => {
+          console.error('Logout error:', error);
+        });
+      }
 }

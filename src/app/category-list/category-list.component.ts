@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { ProductService } from '../product.service';
 import { FormsModule } from '@angular/forms';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { Auth, signOut } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-category-list',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule,FormsModule,ToastrModule],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css'
 })
 export class CategoryListComponent implements OnInit {
   Categories: any[] = [];
 
-  constructor(private CategoryService: ProductService) {}
+  constructor(private toastr: ToastrService, private CategoryService: ProductService,private auth: Auth, private router: Router) {}
 
   ngOnInit(): void {
     this.CategoryService.getCategories().subscribe((data) => {
@@ -26,7 +29,7 @@ export class CategoryListComponent implements OnInit {
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success",
-          cancelButton: "btn btn-danger"
+          cancelButton: "btn btn-danger me-2"
         },
         buttonsStyling: false
       });
@@ -66,37 +69,31 @@ export class CategoryListComponent implements OnInit {
       });
       
     }
-
+    @ViewChild('fileInput') fileInput!: ElementRef;
     previewUrl: string | null = null;
     selectedFile: File | null = null;
     removeImage(): void {
       this.previewUrl = null;
       this.selectedFile = null;
+      // Clear the file input
+   if (this.fileInput) {
+    this.fileInput.nativeElement.value = '';
+  }
     }
     
     // 
-      onFileSelected(event: any) {
-        const file = event.target.files[0];
-        if (!file) return;
-        // 
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.previewUrl = reader.result as string;
-        };
-        reader.readAsDataURL(file);
-        // 
-        this.CategoryService.uploadImageToImgBB(file)
-          .then(url => {
-            console.log('Image uploaded:', url);
-            this.selectedCategory.image=url;
-           
-            // return this.CategoryService.saveImageInfoToFirestore(url, { category: 'Fruits' });
-          })
-          
-          .catch(err => {
-            console.error('Upload error:', err);
-          });
-      }
+    onFileSelected(event: any) {
+      const file = event.target.files[0];
+      if (!file) return;
+    
+      this.selectedFile = file;
+    
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
       selectedCategory: any = null;
 
     editCategory(category: any) {
@@ -110,12 +107,30 @@ export class CategoryListComponent implements OnInit {
       this.selectedCategory = null;
     }
   
-    updateCategory() {
+    async updateCategory() {
+      if (this.selectedFile) {
+        const imageUrl = await this.CategoryService.uploadImageToImgBB(this.selectedFile);
+        this.selectedCategory.image = imageUrl;
+      }
       if (!this.selectedCategory?.id) return;
       this.CategoryService.updateCategory(this.selectedCategory.id, this.selectedCategory)
         .then(() => {
           this.selectedCategory = null;
+          this.toastr.success('Category updated successfully!', 'Success'); // ✅ Toastr
         })
-        .catch(err => console.error('Update failed:', err));
+        .catch(err => {
+          console.error('Update failed:', err);
+        this.toastr.error('Category update failed!', 'Error'); // ❌ Error
+        }
+        );
     }
+
+    logout() {
+          signOut(this.auth).then(() => {
+            localStorage.removeItem('User data');
+            this.router.navigate(['/login']);
+          }).catch((error) => {
+            console.error('Logout error:', error);
+          });
+        }
 }
