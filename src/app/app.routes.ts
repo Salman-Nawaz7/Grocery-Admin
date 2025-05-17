@@ -9,6 +9,7 @@ import { AboutUsComponent } from './about-us/about-us.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth.guard';
 import { UsersComponent } from './users/users.component';
+import { OrderListComponent } from './order-list/order-list.component';
 
 export const routes: Routes = [
     {path:'',redirectTo:'login',pathMatch:'full'},
@@ -23,7 +24,8 @@ export const routes: Routes = [
           { path: 'contact-us', component: ContactUsComponent },
           { path: 'add-category', component: AddCategoryComponent },
           { path: 'about-us', component: AboutUsComponent },
-          { path: 'users', component: UsersComponent }
+          { path: 'users', component: UsersComponent },
+          { path: 'order-list', component: OrderListComponent }
         ],
       },
         {path:'login',component:LoginComponent},

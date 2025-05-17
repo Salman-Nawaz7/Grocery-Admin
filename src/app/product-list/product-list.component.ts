@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, FormsModule,ToastrModule],
+  imports: [CommonModule, FormsModule, ToastrModule, SidebarComponent],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'], // note: `styleUrls` (plural)
   encapsulation:ViewEncapsulation.None
@@ -29,8 +29,8 @@ selectedCategory: string = 'All';
 filteredProducts: any[] = [];
 
 categories: string[] = []
-
-  constructor(private toastr: ToastrService, private productService: ProductService,private auth: Auth, private router: Router) {}
+loading = false;
+  constructor(private toastr: ToastrService, private productService: ProductService) {}
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe((data) => {
@@ -139,69 +139,122 @@ onCategoryChange(): void {
       });
       
     }
-    previewUrl: string | null = null;
-selectedFile: File | null = null;
+//     previewUrl: string | null = null;
+// selectedFile: File | null = null;
 @ViewChild('fileInput') fileInput!: ElementRef;
 
-
-removeImage(): void {
-  this.previewUrl = null;
-  this.selectedFile = null;
-  // Clear the file input
-  if (this.fileInput) {
-    this.fileInput.nativeElement.value = '';
-  }
-}
-
 // 
-onFileSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+selectedFiles: File[] = [];
+imagePreviews: string[] = [];
 
-  this.selectedFile = file;
+onMultipleFilesSelected(event: any): void {
+  const files: FileList = event.target.files;
+  const maxImages = 4;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    this.previewUrl = reader.result as string;
-  };
-  reader.readAsDataURL(file);
-}
-    selectedProduct: any = null;
-    editProduct(product: any) {
-      this.selectedProduct = { ...product }; // Clone for editing
-       this.previewUrl = product.image || null;
+  if (files.length + this.imagePreviews.length > maxImages) {
+    alert(`You can only select up to ${maxImages} images.`);
+    this.fileInput.nativeElement.value = '';
+    return;
+  }
 
-  // Programmatically open modal
+  Array.from(files).forEach((file) => {
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreviews.push(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      this.selectedFiles.push(file);
     }
+  });
+}
+
+removeImageAtIndex(index: number): void {
+  this.imagePreviews.splice(index, 1);
+  this.selectedFiles.splice(index, 1);
+}
+// 
+editProduct(product: any) {
+  this.selectedProduct = { ...product };
+  this.imagePreviews = [...(product.images || [])];
+  this.selectedFiles = []; // Start fresh for new uploads
+}
+
+    selectedProduct: any = null;
+  //   editProduct(product: any) {
+  //     this.selectedProduct = { ...product }; // Clone for editing
+  //      this.previewUrl = product.image || null;
+
+  // // Programmatically open modal
+  //   }
   
+    // cancelEdit() {
+    //   this.selectedProduct = null;
+    // }
     cancelEdit() {
       this.selectedProduct = null;
-    }
-  
-    async updateProduct() {
-      if (this.selectedFile) {
-        const imageUrl = await this.productService.uploadImageToImgBB(this.selectedFile);
-        this.selectedProduct.image = imageUrl;
+      this.imagePreviews = [];
+      this.selectedFiles = [];
+      if (this.fileInput) {
+        this.fileInput.nativeElement.value = '';
       }
+    }
+    
+    // async updateProduct() {
+    //   if (this.selectedFile) {
+    //     const imageUrl = await this.productService.uploadImageToImgBB(this.selectedFile);
+    //     this.selectedProduct.image = imageUrl;
+    //   }
+    //   if (!this.selectedProduct?.id) return;
+    //   this.productService.updateProduct(this.selectedProduct.id, this.selectedProduct)
+    //     .then(() => {
+    //       this.selectedProduct = null;
+    //       this.toastr.success('Product updated successfully!', 'Success'); // ✅ Toastr
+    //     })
+    //     .catch(err => {
+    //       console.error('Update failed:', err);
+    //     this.toastr.error('Product update failed!', 'Error'); // ❌ Error
+    //     }
+    //     );
+        
+    // }
+    async updateProduct() {
+      if (this.loading) return;
+    this.loading = true;
       if (!this.selectedProduct?.id) return;
+    
+      // Upload new files if any
+      const uploadedImageUrls = [];
+    
+      for (const file of this.selectedFiles) {
+        const url = await this.productService.uploadImageToImgBB(file);
+        uploadedImageUrls.push(url);
+      }
+    
+      // Combine already-present image URLs with new ones
+      this.selectedProduct.images = [
+        ...this.imagePreviews.filter(url => url.startsWith('http')), // already saved
+        ...uploadedImageUrls, // newly uploaded
+      ];
+    
+      // Trim to max 4
+      this.selectedProduct.images = this.selectedProduct.images.slice(0, 4);
+    
       this.productService.updateProduct(this.selectedProduct.id, this.selectedProduct)
         .then(() => {
+          
           this.selectedProduct = null;
-          this.toastr.success('Product updated successfully!', 'Success'); // ✅ Toastr
+          this.imagePreviews = [];
+          this.selectedFiles = [];
+          this.toastr.success('Product updated successfully!', 'Success');
+          this.loading = false;
         })
         .catch(err => {
           console.error('Update failed:', err);
-        this.toastr.error('Product update failed!', 'Error'); // ❌ Error
-        }
-        );
-        
+          this.toastr.error('Product update failed!', 'Error');
+          this.loading = false;
+        });
     }
-    logout() {
-          signOut(this.auth).then(() => {
-            localStorage.removeItem('User data');
-            this.router.navigate(['/login']);
-          }).catch((error) => {
-            console.error('Logout error:', error);
-          });
-        }
+    
+    
 }

@@ -6,17 +6,18 @@ import { FormsModule } from '@angular/forms';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Auth, signOut } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { SidebarComponent } from "../sidebar/sidebar.component";
 
 @Component({
   selector: 'app-category-list',
-  imports: [CommonModule,FormsModule,ToastrModule],
+  imports: [CommonModule, FormsModule, ToastrModule, SidebarComponent],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.css'
 })
 export class CategoryListComponent implements OnInit {
   Categories: any[] = [];
 
-  constructor(private toastr: ToastrService, private CategoryService: ProductService,private auth: Auth, private router: Router) {}
+  constructor(private toastr: ToastrService, private CategoryService: ProductService) {}
 
   ngOnInit(): void {
     this.CategoryService.getCategories().subscribe((data) => {
@@ -86,6 +87,15 @@ export class CategoryListComponent implements OnInit {
       const file = event.target.files[0];
       if (!file) return;
     
+      // Check if the file is an image
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        if (this.fileInput) {
+          this.fileInput.nativeElement.value = '';
+        }
+        return;
+      }
+    
       this.selectedFile = file;
     
       const reader = new FileReader();
@@ -125,12 +135,5 @@ export class CategoryListComponent implements OnInit {
         );
     }
 
-    logout() {
-          signOut(this.auth).then(() => {
-            localStorage.removeItem('User data');
-            this.router.navigate(['/login']);
-          }).catch((error) => {
-            console.error('Logout error:', error);
-          });
-        }
+   
 }

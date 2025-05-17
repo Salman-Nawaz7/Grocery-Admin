@@ -16,4 +16,20 @@
     background-color: #2b3e5c !important;
     color: #ffffff !important;
   }
-  
+  .sidebar {
+    height: 100vh;
+    background-color: #2f3349;
+    color: #fff;
+  }
+  .sidebar a {
+    color: #adb5bd;
+    text-decoration: none;
+    display: block;
+    padding: 10px 20px;
+  }
+  .sidebar a:hover {
+    background-color: #3c3f58;
+    color: #fff;
+  }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

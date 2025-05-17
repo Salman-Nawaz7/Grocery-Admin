@@ -9,7 +9,8 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     HttpClientModule,
     BrowserModule,

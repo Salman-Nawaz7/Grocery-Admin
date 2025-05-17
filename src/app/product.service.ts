@@ -24,6 +24,10 @@ import {
 })
 export class ProductService {
   // private firestore = inject(Firestore); // ✅ Modular
+  private orderCollection: CollectionReference<DocumentData>;
+
+
+
   private productCollection: CollectionReference<DocumentData>;
   private categoryCollection: CollectionReference<DocumentData>;
   private requestCollection: CollectionReference<DocumentData>;
@@ -32,6 +36,8 @@ export class ProductService {
   private apiKey = 'dd822a371681c4dce859aa0bb87b61d6';
   constructor(private afAuth: AngularFireAuth, private firestores: AngularFirestore, private http: HttpClient, private firestore: Firestore ,private storage: Storage) {
 
+
+this.orderCollection = collection(this.firestore, 'Orders');
     this.productCollection = collection(this.firestore, 'Products');
     this.categoryCollection = collection(this.firestore, 'Category');
     this.requestCollection = collection(this.firestore, 'ContactRequests');
@@ -59,6 +65,9 @@ export class ProductService {
     // const productsRef = collection(this.firestore, 'Products');
     return collectionData(this.aboutUsCollection, { idField: 'id' });
   }
+  getOrders() {
+  return collectionData(this.orderCollection, { idField: 'id' });
+}
   deleteProduct(id: string) {
     const productDocRef = doc(this.firestore, `Products/${id}`);
     return deleteDoc(productDocRef);
@@ -78,6 +87,10 @@ export class ProductService {
     return deleteDoc(userDocRef);
   }
 
+deleteOrder(id: string) {
+  const orderDocRef = doc(this.firestore, `Orders/${id}`);
+  return deleteDoc(orderDocRef);
+}
 
  
   // async uploadImage(file: File): Promise<string> {
@@ -113,6 +126,10 @@ export class ProductService {
     return updateDoc(userRef, data);
   }
   
+  updateOrder(id: string, data: any) {
+  const orderRef = doc(this.firestore, `Orders/${id}`);
+  return updateDoc(orderRef, data);
+}
   uploadImageToImgBB(file: File): Promise<string> {
     const formData = new FormData();
     formData.append('image', file);
@@ -173,4 +190,10 @@ export class ProductService {
     const credential = EmailAuthProvider.credential(user.email, currentPassword);
     await reauthenticateWithCredential(user, credential);
   }
+  
+  markContactRequestAsRead(id: string): Promise<void> {
+  const requestRef = doc(this.firestore, `ContactRequests/${id}`);
+  return updateDoc(requestRef, { status: 'read' });
+}
+
 }

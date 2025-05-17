@@ -1,33 +1,11 @@
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product List - Sneat Style</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-          .sidebar {
-        height: 100vh;
-        background-color: #2f3349;
-        color: #fff;
-      }
-      .sidebar a {
-        color: #adb5bd;
-        text-decoration: none;
-        display: block;
-        padding: 10px 20px;
-      }
-      .sidebar a:hover {
-        background-color: #3c3f58;
-        color: #fff;
-      }
-      
-    </style>
-  </head>
-  <div class="col-md-2 sidebar d-flex flex-column p-0">
-    <h4 class="text-center py-4">Dashboard</h4>
-    <a href="#">Overview</a>
-    <a href="/product-list">Products List</a>
-    <a href="/product-add">Add Products</a>
-    <a href="/category-list">Category List</a>
-    <a href="/add-category">Add Category</a>
-    <a href="/contact-us">Contact Requests</a>
-  </div>
+<h4 class="text-center py-4">Dashboard</h4>
+<a routerLink="/dashboard" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">Overview</a>
+<a routerLink="/product-add" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">Add Products</a>
+<a routerLink="/product-list" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">Products List</a>
+<a routerLink="/add-category" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">Add Category</a>
+<a routerLink="/category-list" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">Category List</a>
+<a routerLink="/order-list" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">Order List</a>
+<a routerLink="/contact-us" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">Contact Requests</a>
+<a routerLink="/about-us" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">About us</a>
+<a routerLink="/users" [routerLinkActive]="['active-link']" [routerLinkActiveOptions]="{ exact: true }">Users</a>
+<a  (click)="logout(); $event.preventDefault()">Logout</a>

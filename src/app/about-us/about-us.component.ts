@@ -5,17 +5,18 @@ import { ProductService } from '../product.service';
 import { ToastrModule } from 'ngx-toastr';
 import { Auth, signOut } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { SidebarComponent } from "../sidebar/sidebar.component";
 
 @Component({
   selector: 'app-about-us',
-  imports: [CommonModule,FormsModule,ToastrModule],
+  imports: [CommonModule, FormsModule, ToastrModule, SidebarComponent],
   templateUrl: './about-us.component.html',
   styleUrl: './about-us.component.css'
 })
 export class AboutUsComponent implements OnInit {
   AboutUs: any[] = [];
   
-    constructor(private AboutUsService: ProductService,private auth: Auth, private router: Router){}
+    constructor(private AboutUsService: ProductService){}
   
     ngOnInit(): void {
       this.AboutUsService.getAboutUs().subscribe((data) => {
@@ -230,12 +231,5 @@ export class AboutUsComponent implements OnInit {
         })
         .catch(err => console.error('Update failed:', err));
     }
-    logout() {
-            signOut(this.auth).then(() => {
-              localStorage.removeItem('User data');
-              this.router.navigate(['/login']);
-            }).catch((error) => {
-              console.error('Logout error:', error);
-            });
-          }
+    
 }

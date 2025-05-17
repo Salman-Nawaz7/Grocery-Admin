@@ -52,7 +52,7 @@ export class LoginComponent {
               image: cred.user.photoURL,
               phone: cred.user.phoneNumber
             }));
-            // alert("Login successful");
+            localStorage.setItem('justLoggedIn', 'true'); // ✅ Set flag here
             this.router.navigate(['/dashboard']);
           })
           .catch((err) => {
@@ -98,6 +98,7 @@ export class LoginComponent {
           image: result.user.photoURL,
           phone: result.user.phoneNumber
         }));
+   
         this.router.navigate(['/dashboard']);
       })
       .catch((err) => {

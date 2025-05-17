@@ -1,0 +1,22 @@
+body { background-color: #f5f5f9; }
+.sidebar {
+  height: 100vh;
+  background-color: #2f3349;
+  color: #fff;
+}
+.sidebar a {
+  color: #adb5bd;
+  text-decoration: none;
+  display: block;
+  padding: 10px 20px;
+}
+.sidebar a:hover {
+  background-color: #3c3f58;
+  color: #fff;
+}
+.card-title { font-size: 1rem; font-weight: 500; }
+.card-value { font-size: 1.5rem; font-weight: bold; }
+.active-button {
+  background-color: #fff !important;
+  color: #fff !important;
+}

@@ -28,72 +28,71 @@
 </head>
 <body>
   <div class="container-fluid">
-    <div class="row">
-      <!-- Sidebar -->
-      <div class="col-md-2 sidebar d-flex flex-column p-0">
-        <h4 class="text-center py-4">Dashboard</h4>
-        <a href="#">Overview</a>
-        <a href="/product-add">Add Products</a>
-        <a href="/product-list">Products List</a>
-        <a href="/add-category">Add Category</a>
-        <a href="/category-list">Category List</a>
-        <a href="/contact-us">Contact Requests</a>
-        <a href="/about-us">About us</a>
-        <a href="/users">Users</a>
-        <button class="btn btn-danger btn-sm" (click)="logout()">Logout</button>
+  <div class="row">
+    <div class="col-md-2 sidebar d-flex flex-column p-0">
+      <app-sidebar></app-sidebar>
+    </div>
+    <div class="col-md-10 p-4">
+      <h2 class="mb-4">Ecommerce Dashboard</h2>
 
-      </div>
-
-      <!-- Main Content -->
-      <div class="col-md-10 p-4">
-        <h2 class="mb-4">Ecommerce Dashboard</h2>
-
-        <!-- Stats Cards -->
-        <div class="row g-4 mb-4">
-          <div class="col-md-3">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <div class="card-title">Total Sales</div>
-                <div class="card-value">$25,000</div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <div class="card-title">Revenue</div>
-                <div class="card-value">$18,400</div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <div class="card-title">Orders</div>
-                <div class="card-value">1,250</div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <div class="card-title">Customers</div>
-                <div class="card-value">350</div>
-              </div>
-            </div>
-          </div>
+      <div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <a [routerLink]="['/product-list']" class="text-decoration-none text-dark">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="card-title">Products</div>
+          <div class="card-value">{{ totalProducts }}</div>
         </div>
+      </div>
+    </a>
+  </div>
 
-        <!-- Chart -->
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">Sales Overview</h5>
-            <canvas id="salesChart" height="100"></canvas>
-          </div>
+  <div class="col-md-3">
+    <a [routerLink]="['/users']" class="text-decoration-none text-dark">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="card-title">Users</div>
+          <div class="card-value">{{ totalRoles }}</div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a [routerLink]="['/order-list']" class="text-decoration-none text-dark">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="card-title">Orders</div>
+          <div class="card-value">{{ totalOrders }}</div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a [routerLink]="['/contact-us']" class="text-decoration-none text-dark">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="card-title">Contact Requests</div>
+          <div class="card-value">{{ totalContactRequests }}</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+
+      <!-- Optional: Chart -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Sales Overview</h5>
+          <canvas id="salesChart" height="100"></canvas>
         </div>
       </div>
     </div>
   </div>
+</div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
